@@ -3,6 +3,7 @@ import sys
 import keras
 import numpy as np
 import requests
+import time
 #from influxdb_client import InfluxDBClient
 
 # Query på vores API for at hente fluxobjekt gennem fluxAPI, fetch fluxobjekt fra API, 
@@ -29,7 +30,7 @@ class SliceLayer(keras.layers.Layer):
 url = os.getenv('URL')
 token = os.getenv('TOKEN')
 org = os.getenv('ORG')
-bucket = "bucket_name"
+bucket = os.getenv('BUCKET')#måske ik nødvendigt
 window_id = 0
 
 #setup get og post requests til API
@@ -39,9 +40,9 @@ def model_inference(data, model):
 
 
 def request_data(bucket, window_id):
-    url = 'http://localhost:3000/api/your-endpoint'#fix så det er rigtigt endpoint
+    url = 'http://localhost:3000/api/stress_predict'#fix så det er rigtigt endpoint
     params = {
-    'string_param': bucket,
+    'string_param': bucket,#måske ik nødvendigt
     'string_param': "data",
     'number_param': window_id
     }
@@ -50,6 +51,7 @@ def request_data(bucket, window_id):
         return response#fluxobject eller json
     else:
         print('Error: ', response.status_code)
+        return 0
 
 def post_preds(data, model, window_id):
     url = 'http://localhost:3000/api/stress_predict'#fix så det er rigtigt endpoint
@@ -61,8 +63,7 @@ def post_preds(data, model, window_id):
     }
     response = requests.post(url, data=send_data)
     if response.status_code == 200:
-        print(f"Successfully posted prediction for window_id {window_id}")
-        return window_id + 1
+        print(f"Successfully posted prediction for window_id: {window_id}")
     else:
         print('Error: ', response.status_code)
     
@@ -109,7 +110,14 @@ def build_array(data):#sat op til fluxobject
     return data_array
 
 if __name__ == "__main__":
-    data=request_data(bucket, measurement, window_id)
-    data_array = build_array(data)
-    model = keras.models.load_model(filepath="src/model_v3_S2_120s.keras", custom_objects={"SliceLayer": SliceLayer})
-    prediction = model_inference(data, model)
+    window_id = 0
+    while True:
+        data=request_data(bucket, window_id)
+        if data == 0:
+            print("No new data")
+        else:
+            data_array = build_array(data)
+            model = keras.models.load_model(filepath="src/model_v3_S2_120s.keras", custom_objects={"SliceLayer": SliceLayer})
+            post_preds(data_array, model, window_id)
+            window_id += 1
+        time.sleep(30)
