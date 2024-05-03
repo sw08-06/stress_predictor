@@ -30,13 +30,13 @@ def model_inference(data, model):
 
 #make GET request to API
 def request_data(bucket, window_id):
-    url = 'http://localhost:3000/api/stress_predict'#fix så det er rigtigt endpoint
+    url = 'http://localhost:3000/api/stress_predict'
     params = {
     'bucket': bucket,#måske ik nødvendigt
     'measurement': "data",
     'window_id': window_id
     }
-    response = requests.get(url, params=params)
+    response = requests.get(url, params=params)#Kan nå hertil
     if response.status_code == 200:
         return response#fluxobject eller json
     else:
@@ -45,7 +45,7 @@ def request_data(bucket, window_id):
 
 #make POST request to API
 def post_preds(data, model, window_id):
-    url = 'http://localhost:3000/api/stress_predict'#fix så det er rigtigt endpoint
+    url = 'http://localhost:3000/api/stress_predict'
     prediction=np.round(model_inference(data, model))
     send_data = {
         'measurement': "prediction",
