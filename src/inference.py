@@ -26,7 +26,13 @@ class SliceLayer(keras.layers.Layer):
     def from_config(cls, config):
         return cls(**config)
     
-    
+url = os.getenv('URL')
+token = os.getenv('TOKEN')
+org = os.getenv('ORG')
+bucket = "bucket_name"
+measurement = "data"
+window_id = 0
+
 #setup get og post requests til API
 def model_inference(data, model):
     prediction = model.predict(x=data, verbose=1)
@@ -104,7 +110,7 @@ def build_array(data):#sat op til fluxobject
     return data_array
 
 if __name__ == "__main__":
-    #data = query_data()
+    data=request_data(bucket, measurement, window_id)
     data_array = build_array(data)
     model = keras.models.load_model(filepath="src/model_v3_S2_120s.keras", custom_objects={"SliceLayer": SliceLayer})
     prediction = model_inference(data, model)
