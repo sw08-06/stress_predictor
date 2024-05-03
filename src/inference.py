@@ -30,7 +30,6 @@ url = os.getenv('URL')
 token = os.getenv('TOKEN')
 org = os.getenv('ORG')
 bucket = "bucket_name"
-measurement = "data"
 window_id = 0
 
 #setup get og post requests til API
@@ -39,11 +38,11 @@ def model_inference(data, model):
     return prediction
 
 
-def request_data(bucket, measurement, window_id):
+def request_data(bucket, window_id):
     url = 'http://localhost:3000/api/your-endpoint'#fix så det er rigtigt endpoint
     params = {
     'string_param': bucket,
-    'string_param': measurement,
+    'string_param': "data",
     'number_param': window_id
     }
     response = requests.get(url, params=params)
@@ -55,15 +54,15 @@ def request_data(bucket, measurement, window_id):
 def post_preds(data, model, window_id):
     url = 'http://localhost:3000/api/stress_predict'#fix så det er rigtigt endpoint
     prediction=np.round(model_inference(data, model))
-    measurement = "prediction"
     send_data = {
-        'string_param': measurement,
+        'string_param': "prediction",
         'number_param': prediction,
         'number_param': window_id
     }
     response = requests.post(url, data=send_data)
     if response.status_code == 200:
         print(f"Successfully posted prediction for window_id {window_id}")
+        return window_id + 1
     else:
         print('Error: ', response.status_code)
     
