@@ -23,13 +23,6 @@ class SliceLayer(keras.layers.Layer):
     def from_config(cls, config):
         return cls(**config)
 
-# Set up global variables
-url = os.getenv('URL')
-token = os.getenv('TOKEN')
-org = os.getenv('ORG')
-bucket = os.getenv('BUCKET')#måske ik nødvendigt
-window_id = 0
-
 #predict on data
 def model_inference(data, model):
     prediction = model.predict(x=data, verbose=1)
@@ -39,9 +32,9 @@ def model_inference(data, model):
 def request_data(bucket, window_id):
     url = 'http://localhost:3000/api/stress_predict'#fix så det er rigtigt endpoint
     params = {
-    'string_param': bucket,#måske ik nødvendigt
-    'string_param': "data",
-    'number_param': window_id
+    'bucket': bucket,#måske ik nødvendigt
+    'measurement': "data",
+    'window_id': window_id
     }
     response = requests.get(url, params=params)
     if response.status_code == 200:
@@ -55,9 +48,9 @@ def post_preds(data, model, window_id):
     url = 'http://localhost:3000/api/stress_predict'#fix så det er rigtigt endpoint
     prediction=np.round(model_inference(data, model))
     send_data = {
-        'string_param': "prediction",
-        'number_param': prediction,
-        'number_param': window_id
+        'measurement': "prediction",
+        '_value': prediction,
+        'window_id': window_id
     }
     response = requests.post(url, data = send_data)
     if response.status_code == 200:
@@ -108,6 +101,10 @@ def build_array(data):#sat op til fluxobject
 
 #continously run the inference with a model, making GET and POST requests to the API
 if __name__ == "__main__":
+    url = os.getenv('URL')
+    token = os.getenv('TOKEN')
+    org = os.getenv('ORG')
+    bucket = os.getenv('BUCKET')
     window_id = 0
     model = keras.models.load_model(filepath="src/model_v3_S2_120s.keras", custom_objects={"SliceLayer": SliceLayer})
     while True:
