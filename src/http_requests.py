@@ -2,18 +2,20 @@ import requests
 
 
 def get_data(url):
-    response = requests.get(f"{url}/api/stress_predict")
-    if response.status_code == 200:
+    try:
+        response = requests.get(f"{url}/api/stress_predict")
+        response.raise_for_status()
         return response
-    else:
-        print("GET request failed:", response.status_code)
+    except requests.exceptions.RequestException as e:
+        print("GET request failed:", e)
         return None
 
 
 def post_prediction(url, prediction):
-    response = requests.post(f"{url}/api/stress_predict", data=prediction)
-    if response.status_code == 200:
+    try:
+        response = requests.post(f"{url}/api/stress_predict", data={"prediction": prediction})
+        response.raise_for_status()
         return response
-    else:
-        print("POST request failed:", response.status_code)
+    except requests.exceptions.RequestException as e:
+        print("POST request failed:", e)
         return None
