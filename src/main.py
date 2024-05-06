@@ -3,12 +3,10 @@ from dotenv import load_dotenv
 from inference import *
 from http_requests import *
 
-load_dotenv()
-
-url = os.getenv("INFLUX_URL")
-
 
 def main(stress_prediction_interval, model_name):
+    load_dotenv()
+    url = os.getenv("INFLUX_URL")
     while True:
         get_response = get_data(url)
         combined_data = combine_data_from_get_response(get_response)

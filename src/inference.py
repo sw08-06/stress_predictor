@@ -8,14 +8,14 @@ def combine_data_from_get_response(get_response):
     eda_list = []
     temp_list = []
 
-    for table in get_response:
-        for record in table.records:
-            if record.get_field() == "bvp":
-                bvp_list.append(record.get_value())
-            elif record.get_field() == "eda":
-                eda_list.append(record.get_value())
-            elif record.get_field() == "temp":
-                temp_list.append(record.get_value())
+    # for table in get_response:
+    #     for record in table.records:
+    #         if record.get_field() == "bvp":
+    #             bvp_list.append(record.get_value())
+    #         elif record.get_field() == "eda":
+    #             eda_list.append(record.get_value())
+    #         elif record.get_field() == "temp":
+    #             temp_list.append(record.get_value())
 
     data_list = bvp_list + eda_list + temp_list
     data_array = np.array(data_list)
