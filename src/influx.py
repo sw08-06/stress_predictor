@@ -2,6 +2,15 @@ import requests
 
 
 def get_data(url):
+    """
+    Fetches data from the specified URL.
+
+    Args:
+        url (str): The URL to fetch data from.
+
+    Returns:
+        requests.Response: The response object containing the fetched data, or None if the request fails.
+    """
     try:
         response = requests.get(f"{url}/api/stress_predict")
         response.raise_for_status()
@@ -12,6 +21,16 @@ def get_data(url):
 
 
 def post_prediction(url, prediction):
+    """
+    Sends a POST request with prediction data to the specified URL.
+
+    Args:
+        url (str): The URL to send the POST request to.
+        prediction: The prediction data to be sent.
+
+    Returns:
+        requests.Response: The response object from the server, or None if the request fails.
+    """
     try:
         response = requests.post(f"{url}/api/stress_predict", data={"prediction": prediction})
         response.raise_for_status()
