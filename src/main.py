@@ -1,20 +1,26 @@
+import os
 import time
-from inference import *
-from stress_predictor.src.influx import *
+# from prediction import *
+from http_requests import *
 from dotenv import load_dotenv
 
 
-def main(model_name):
+def main(model_name, prediction_interval):
     load_dotenv()
-    url = os.getenv("INFLUX_URL")
+    url = os.getenv("API_URL")
 
-    while True:
+    print(url)
+    test = True
+    while test:
         get_response = get_data(url)
-        combined_data = combine_data_from_get_response(get_response)
-        prediction = create_predictions(combined_data, model_name)
-        post_prediction(url, prediction)
-        time.sleep(5)
+        print(get_response.text)
+        print(get_response.json())
+        test = False
+        # combined_data, window_id = combine_data_from_get_response(get_response)
+        # prediction = create_prediction(combined_data, model_name)
+        # post_prediction(url, prediction, format_timestamp(time.time_ns()), window_id)
+        time.sleep(prediction_interval)
 
 
 if __name__ == "__main__":
-    main(model_name="model_v3_S2_120s.keras")
+    main(model_name="model_v4_S2_60s_stress_mul8.keras", prediction_interval=30)
