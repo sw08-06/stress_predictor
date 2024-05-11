@@ -9,15 +9,13 @@ def main(model_name, prediction_interval):
     load_dotenv()
     url = os.getenv("API_URL")
 
-    test = True
-    while test:
+    while True:
+        time.sleep(prediction_interval)
         get_response = get_data(url)
-        if(get_response != None) :
+        if get_response != None:
             combined_data, window_id = combine_data_from_get_response(get_response)
             prediction = create_prediction(combined_data, model_name)
             post_prediction(url, prediction, window_id)
-            time.sleep(prediction_interval)
-        test = False
 
 
 if __name__ == "__main__":
