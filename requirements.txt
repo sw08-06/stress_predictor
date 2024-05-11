@@ -1,5 +1,5 @@
-# tensorflow
-# keras
-# numpy
+tensorflow
+keras
+numpy
 python-dotenv
 requests

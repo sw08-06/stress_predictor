@@ -1,6 +1,6 @@
 import os
 import time
-# from prediction import *
+from prediction import *
 from http_requests import *
 from dotenv import load_dotenv
 
@@ -9,17 +9,15 @@ def main(model_name, prediction_interval):
     load_dotenv()
     url = os.getenv("API_URL")
 
-    print(url)
     test = True
     while test:
         get_response = get_data(url)
-        print(get_response.text)
-        print(get_response.json())
+        if(get_response != None) :
+            combined_data, window_id = combine_data_from_get_response(get_response)
+            prediction = create_prediction(combined_data, model_name)
+            post_prediction(url, prediction, window_id)
+            time.sleep(prediction_interval)
         test = False
-        # combined_data, window_id = combine_data_from_get_response(get_response)
-        # prediction = create_prediction(combined_data, model_name)
-        # post_prediction(url, prediction, format_timestamp(time.time_ns()), window_id)
-        time.sleep(prediction_interval)
 
 
 if __name__ == "__main__":

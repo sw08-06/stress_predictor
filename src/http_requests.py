@@ -1,3 +1,4 @@
+import time
 import requests
 
 
@@ -20,7 +21,7 @@ def get_data(url):
         return None
 
 
-def post_prediction(url, prediction, timestamp, window_id):
+def post_prediction(url, prediction, window_id):
     """
     Sends a POST request with prediction data to the specified URL.
 
@@ -32,7 +33,7 @@ def post_prediction(url, prediction, timestamp, window_id):
         requests.Response: The response object from the server, or None if the request fails.
     """
     try:
-        response = requests.post(f"{url}/api/stress-predict", data={"time": timestamp, "window_id": window_id, "prediction": prediction})
+        response = requests.post(f"{url}/api/stress-predict", json={"time": time.time_ns(), "window_id": window_id, "prediction": prediction})
         response.raise_for_status()
         return response
     except requests.exceptions.RequestException as e:
