@@ -1,7 +1,6 @@
 import os
 import keras
 import numpy as np
-from datetime import datetime, timezone
 
 
 def combine_data_from_get_response(get_response):
@@ -18,11 +17,11 @@ def combine_data_from_get_response(get_response):
     bvp_list = []
     eda_list = []
     temp_list = []
-    
+
     for row in get_response.json():
         if row["data_type"] == "bvp":
             bvp_list.append(row["_value"])
-        elif row["data_type"]  == "eda":
+        elif row["data_type"] == "eda":
             eda_list.append(row["_value"])
         else:
             temp_list.append(row["_value"])
