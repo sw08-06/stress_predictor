@@ -1,1 +1,5 @@
+tensorflow
+keras
+numpy
+python-dotenv
 requests
