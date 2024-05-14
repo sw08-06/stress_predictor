@@ -14,9 +14,12 @@ def get_data(url):
     """
     try:
         response = requests.get(f"{url}/api/stress-predict")
+        if response.status_code == 204:
+            print("No new data available")
+            return None
         response.raise_for_status()
         return response
-    except requests.exceptions.RequestException as e:
+    except requests.exceptions.HTTPError as e:
         print("GET request failed:", e)
         return None
 
